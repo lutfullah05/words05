@@ -481,6 +481,8 @@ function save() {
     localStorage.setItem('v18_done',  JSON.stringify(done));
     localStorage.setItem('v18_fails', JSON.stringify(fails));
     localStorage.setItem('v18_stats', JSON.stringify(stats));
+  // Her yerel kayıt işleminden sonra buluta da gönder
+if(window.saveToCloud) window.saveToCloud();
 }
 
 // ─── STATE ──────────────────────────────────────────────────────────────────
@@ -1187,6 +1189,7 @@ setInterval(() => {
 </body>
 
 </html>
+
 
 
 
