@@ -1060,7 +1060,32 @@ self.addEventListener('fetch', e => { e.respondWith(fetch(e.request).catch(() =>
 
 init();
 </script>
+  <script type="module">
+  async function googleGiris() {
+    try {
+      const provider = new window.GoogleAuthProvider();
+      const result = await window.signInWithPopup(window.firebaseAuth, provider);
+      const user = result.user;
+      document.getElementById('user-name').textContent = user.displayName;
+      document.getElementById('login-btn').style.display = 'none';
+      document.getElementById('logout-btn').style.display = 'inline-block';
+    } catch (e) {
+      alert('Giriş hatası: ' + e.message);
+    }
+  }
+
+  async function googleCikis() {
+    await window.signOut(window.firebaseAuth);
+    document.getElementById('user-name').textContent = '';
+    document.getElementById('login-btn').style.display = 'inline-block';
+    document.getElementById('logout-btn').style.display = 'none';
+  }
+
+  window.googleGiris = googleGiris;
+  window.googleCikis = googleCikis;
+</script>
 </body>
 
 </html>
+
 
