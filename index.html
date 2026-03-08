@@ -43,6 +43,60 @@ window.firestoreFunctions = { doc, setDoc, getDoc };
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
+  // 1. Veriyi Buluta Kaydetme Fonksiyonu
+window.saveToCloud = async function() {
+  const user = window.firebaseAuth.currentUser;
+  if (!user) return;
+
+  const userData = {
+    stats: JSON.parse(localStorage.getItem('alan12_stats') || '{}'),
+    fails: JSON.parse(localStorage.getItem('alan12_fails') || '[]'),
+    lastSync: new Date().getTime()
+  };
+
+  try {
+    await window.firestoreFunctions.setDoc(
+      window.firestoreFunctions.doc(window.firebaseDb, "users", user.uid), 
+      userData
+    );
+    console.log("Bulut senkronizasyonu başarılı!");
+  } catch (e) {
+    console.error("Yükleme hatası:", e);
+  }
+};
+
+// 2. Veriyi Buluttan Çekme ve Cihaza Yazma
+window.onAuthStateChanged(window.firebaseAuth, async (user) => {
+  const loginBtn = document.getElementById('login-btn');
+  const logoutBtn = document.getElementById('logout-btn');
+  const userName = document.getElementById('user-name');
+
+  if (user) {
+    loginBtn.style.display = 'none';
+    logoutBtn.style.display = 'inline-block';
+    userName.innerText = user.displayName;
+
+    // BULUTTAN VERİLERİ ÇEK
+    const docSnap = await window.firestoreFunctions.getDoc(
+      window.firestoreFunctions.doc(window.firebaseDb, "users", user.uid)
+    );
+
+    if (docSnap.exists()) {
+      const cloudData = docSnap.data();
+      // Yerel veriyi bulut verisiyle güncelle (PC ve Telefon eşitlenir)
+      localStorage.setItem('alan12_stats', JSON.stringify(cloudData.stats));
+      localStorage.setItem('alan12_fails', JSON.stringify(cloudData.fails));
+      
+      // Arayüzü güncellemek için istatistik fonksiyonunu tetikle
+      if(typeof updateStatsUI === "function") updateStatsUI();
+      console.log("Veriler buluttan indirildi.");
+    }
+  } else {
+    loginBtn.style.display = 'inline-block';
+    logoutBtn.style.display = 'none';
+    userName.innerText = '';
+  }
+});
   window.firebaseAuth = auth;
   window.firebaseDb = db;
   window.GoogleAuthProvider = GoogleAuthProvider;
@@ -1133,6 +1187,7 @@ setInterval(() => {
 </body>
 
 </html>
+
 
 
 
