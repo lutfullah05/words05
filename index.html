@@ -22,6 +22,32 @@
     &quot;type&quot;: &quot;image/svg+xml&quot;
   }]
 }">
+  <!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAqA43Ffu-JF01X02FblSZdQvYJO1RUu_s",
+    authDomain: "words05.firebaseapp.com",
+    projectId: "words05",
+    storageBucket: "words05.firebasestorage.app",
+    messagingSenderId: "104606062350",
+    appId: "1:104606062350:web:44a5c006f0691FF327295f",
+    measurementId: "G-H8B8CCZ76T"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  window.firebaseAuth = auth;
+  window.firebaseDb = db;
+  window.GoogleAuthProvider = GoogleAuthProvider;
+  window.signInWithPopup = signInWithPopup;
+  window.signOut = signOut;
+  window.onAuthStateChanged = onAuthStateChanged;
+</script>
 <title>ALAN 12 • TRUE ZEN v4</title>
 <style>
 * { -webkit-tap-highlight-color: transparent; }
@@ -1028,4 +1054,5 @@ self.addEventListener('fetch', e => { e.respondWith(fetch(e.request).catch(() =>
 init();
 </script>
 </body>
+
 </html>
