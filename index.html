@@ -1084,9 +1084,54 @@ init();
   window.googleGiris = googleGiris;
   window.googleCikis = googleCikis;
 </script>
+  <script>
+  // Kullanıcı girişini takip et
+  window.onAuthStateChanged(window.firebaseAuth, async (user) => {
+    if (user) {
+      document.getElementById('user-name').textContent = user.displayName;
+      document.getElementById('login-btn').style.display = 'none';
+      document.getElementById('logout-btn').style.display = 'inline-block';
+      
+      // Firestore'dan veriyi yükle
+      const { doc, getDoc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+      const userRef = doc(window.firebaseDb, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+      
+      if (userSnap.exists()) {
+        const data = userSnap.data();
+        if (data.localStorage) {
+          Object.keys(data.localStorage).forEach(key => {
+            localStorage.setItem(key, data.localStorage[key]);
+          });
+          location.reload();
+        }
+      }
+    } else {
+      document.getElementById('user-name').textContent = '';
+      document.getElementById('login-btn').style.display = 'inline-block';
+      document.getElementById('logout-btn').style.display = 'none';
+    }
+  });
+
+  // Her 30 saniyede veriyi Firestore'a kaydet
+  setInterval(async () => {
+    const user = window.firebaseAuth.currentUser;
+    if (user) {
+      const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+      const userRef = doc(window.firebaseDb, "users", user.uid);
+      const localData = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        localData[key] = localStorage.getItem(key);
+      }
+      await setDoc(userRef, { localStorage: localData });
+    }
+  }, 30000);
+</script>
 </body>
 
 </html>
+
 
 
 
