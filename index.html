@@ -43,6 +43,14 @@ window.firestoreFunctions = { doc, setDoc, getDoc };
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
+  // Mevcutların üzerine yaz veya altına ekle
+  window.firebaseAuth = auth;
+  window.firebaseDb = db;
+  window.GoogleAuthProviderClass = GoogleAuthProvider; // İsmi değiştirdik ki hata vermesin
+  window.signInWithPopupFunc = signInWithPopup; // Fonksiyon ismini sabitledik
+  window.dbDoc = doc;
+  window.dbSet = setDoc;
+  window.dbGet = getDoc;
   // 1. Veriyi Buluta Kaydetme Fonksiyonu
 window.saveToCloud = async function() {
   const user = window.firebaseAuth.currentUser;
@@ -1215,9 +1223,67 @@ setInterval(() => {
   }
 }, 30000);
 </script>
+  <script>
+    <script>
+// 1. GİRİŞ FONKSİYONU (Hata veren kısım burasıydı)
+async function googleGiris() {
+    try {
+        const provider = new window.GoogleAuthProviderClass();
+        const result = await window.signInWithPopupFunc(window.firebaseAuth, provider);
+        console.log("Giriş yapıldı:", result.user.displayName);
+        // Giriş yapınca verileri hemen çek
+        if(window.loadFromCloud) window.loadFromCloud();
+    } catch (error) {
+        console.error("Giriş Hatası:", error);
+    }
+}
+
+// 2. BULUTA KAYDETME (Telefon -> Bulut)
+window.saveToCloud = async function() {
+    const user = window.firebaseAuth.currentUser;
+    if (!user) return;
+
+    const data = {
+        stats: JSON.parse(localStorage.getItem('alan12_stats') || '{}'),
+        fails: JSON.parse(localStorage.getItem('alan12_fails') || '[]'),
+        time: Date.now()
+    };
+
+    try {
+        await window.dbSet(window.dbDoc(window.firebaseDb, "users", user.uid), data);
+        console.log("Bulut güncellendi ✅");
+    } catch (e) { console.error("Kayıt hatası:", e); }
+};
+
+// 3. BULUTTAN ÇEKME (Bulut -> PC)
+window.loadFromCloud = async function() {
+    const user = window.firebaseAuth.currentUser;
+    if (!user) return;
+
+    const docSnap = await window.dbGet(window.dbDoc(window.firebaseDb, "users", user.uid));
+    if (docSnap.exists()) {
+        const cloud = docSnap.data();
+        localStorage.setItem('alan12_stats', JSON.stringify(cloud.stats));
+        localStorage.setItem('alan12_fails', JSON.stringify(cloud.fails));
+        alert("Veriler diğer cihazla eşitlelendi!");
+        location.reload(); // Sayfayı yenileyip yeni puanları gösterir
+    }
+};
+
+// 4. OTOMATİK TETİKLEYİCİ
+// Uygulama ne zaman telefona bir şey kaydetse, buluta da gönderir
+const oldSet = localStorage.setItem;
+localStorage.setItem = function(key, val) {
+    oldSet.apply(this, arguments);
+    if (key.includes('alan12')) {
+        if(window.saveToCloud) window.saveToCloud();
+    }
+};
+</script>
 </body>
 
 </html>
+
 
 
 
