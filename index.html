@@ -428,6 +428,21 @@ function save() {
     localStorage.setItem('v18_done',  JSON.stringify(done));
     localStorage.setItem('v18_fails', JSON.stringify(fails));
     localStorage.setItem('v18_stats', JSON.stringify(stats));
+    // Firestore'a da kaydet
+    try {
+        const user = window.firebaseAuth && window.firebaseAuth.currentUser;
+        if (user && window.firebaseDb && window.firestoreFunctions) {
+            const { doc, setDoc } = window.firestoreFunctions;
+            const now = Date.now();
+            localStorage.setItem('updatedAt', String(now));
+            const localData = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                localData[key] = localStorage.getItem(key);
+            }
+            setDoc(doc(window.firebaseDb, 'users', user.uid), { localStorage: localData, updatedAt: now });
+        }
+    } catch(e) { console.warn('Firestore kayit hatasi:', e); }
 }
 
 // ─── STATE ──────────────────────────────────────────────────────────────────
@@ -1141,13 +1156,6 @@ init();
       console.warn('Firestore kayıt hatası:', e);
     }
   }
-
-  // Orijinal save() fonksiyonunu Firestore'a da yazan versiyonla sarmalıyoruz
-  const _origSave = window.save;
-  window.save = function() {
-    if(_origSave) _origSave();
-    saveToFirestore();
-  };
 
   // Kullanıcı girişini takip et
   window.onAuthStateChanged(window.firebaseAuth, async (user) => {
