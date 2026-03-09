@@ -1115,17 +1115,15 @@ init();
       if (userSnap.exists()) {
         const data = userSnap.data();
         if (data.localStorage) {
-          // Firestore'daki verinin timestamp'ini kontrol et
-          const remoteTs = data.updatedAt || 0;
+          const remoteTs = typeof data.updatedAt === 'number' ? data.updatedAt : parseInt(data.updatedAt || '0');
           const localTs  = parseInt(localStorage.getItem('updatedAt') || '0');
 
-          // Sadece uzak veri daha yeniyse yükle
-          if (remoteTs > localTs) {
+          // Her zaman en yeni veriyi al
+          if (remoteTs >= localTs) {
             Object.keys(data.localStorage).forEach(key => {
               localStorage.setItem(key, data.localStorage[key]);
             });
             localStorage.setItem('updatedAt', String(remoteTs));
-            // Reload bayrağı koy, tekrar reload etmesin
             sessionStorage.setItem(SYNC_LOADED_KEY, '1');
             location.reload();
             return;
