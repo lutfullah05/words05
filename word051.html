@@ -308,8 +308,73 @@ textarea { width:100%; height:90px; background:var(--bg); color:var(--accent); b
 
     <!-- DUEL TAB -->
     <div id="tab-duel" style="display:none;">
-        <div class="card" id="duelSetup">
-            <div style="font-size:1.2rem;font-weight:bold;margin-bottom:12px;text-align:center">⚔️ DÜELLO MODU</div>
+
+        <!-- Düello mod seçimi -->
+        <div id="duelModeSelect" style="margin-bottom:12px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+                <button class="btn" onclick="showDuelMode('local')" style="background:var(--card);border:2px solid var(--accent);color:var(--accent);font-weight:bold">📱 Yerel Düello<br><span style="font-size:0.75rem;font-weight:normal;color:var(--subtext)">Aynı cihazda</span></button>
+                <button class="btn" onclick="showDuelMode('online')" style="background:var(--accent);border:2px solid var(--accent);color:white;font-weight:bold">🌐 Online Düello<br><span style="font-size:0.75rem;font-weight:normal;opacity:0.8">Farklı cihazlarda</span></button>
+            </div>
+        </div>
+
+        <!-- Online Düello Kurulum -->
+        <div id="onlineDuelSetup" style="">
+            <div style="font-size:1.1rem;font-weight:bold;margin-bottom:12px;text-align:center">🌐 ONLİNE DÜELLO</div>
+            <div style="font-size:0.85rem;color:var(--subtext);margin-bottom:8px;font-weight:bold">GÜN SEÇ</div>
+            <select id="onlineDuelDay" style="width:100%;padding:12px;background:var(--card);color:var(--accent);border:1px solid var(--border);border-radius:8px;margin-bottom:10px;font-size:1rem;font-weight:bold"></select>
+            <div style="font-size:0.85rem;color:var(--subtext);margin-bottom:8px;font-weight:bold">SORU SAYISI</div>
+            <div style="display:flex;gap:6px;margin-bottom:14px">
+                <button class="d-btn active" data-odq="10" onclick="setOnlineDuelQ(10)">10</button>
+                <button class="d-btn" data-odq="20" onclick="setOnlineDuelQ(20)">20</button>
+                <button class="d-btn" data-odq="30" onclick="setOnlineDuelQ(30)">30</button>
+            </div>
+            <button class="btn btn-main" onclick="createOnlineRoom()" style="margin-bottom:8px">🏠 Oda Oluştur</button>
+            <div style="text-align:center;color:var(--subtext);font-size:0.85rem;margin:8px 0">— veya —</div>
+            <input id="joinRoomCode" class="search-box" placeholder="Oda kodu gir (örn: AB3X)" style="text-transform:uppercase;margin-bottom:8px">
+            <button class="btn" onclick="joinOnlineRoom()" style="color:var(--accent);border-color:var(--accent)">🚪 Odaya Katıl</button>
+        </div>
+
+        <!-- Online Bekleme Odası -->
+        <div id="onlineWaiting" style="display:none;text-align:center;padding:20px 0">
+            <div style="font-size:3rem;margin-bottom:10px">⏳</div>
+            <div style="font-size:1.1rem;font-weight:bold;margin-bottom:8px">Oda Kodu:</div>
+            <div id="roomCodeDisplay" style="font-size:3rem;font-weight:bold;color:var(--accent);letter-spacing:8px;margin-bottom:12px"></div>
+            <div style="font-size:0.9rem;color:var(--subtext);margin-bottom:16px">Bu kodu arkadaşına gönder!</div>
+            <div id="waitingStatus" style="font-size:0.95rem;color:var(--warn)">Rakip bekleniyor...</div>
+            <div id="waitingPlayers" style="margin-top:12px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center"></div>
+            <button id="startOnlineBtn" class="btn btn-main" onclick="hostStartGame()" style="display:none;margin-top:12px">▶ Oyunu Başlat</button>
+            <div style="font-size:0.8rem;color:var(--subtext);margin-top:6px">Maksimum 5 oyuncu</div>
+            <button class="btn btn-error" onclick="cancelOnlineRoom()" style="margin-top:10px;width:auto;padding:8px 20px">İptal</button>
+        </div>
+
+        <!-- Online Oyun Ekranı -->
+        <div id="onlineGame" style="display:none;">
+            <!-- Dinamik skor bandı (2-5 oyuncu) -->
+            <div id="og-scoreBand" style="display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:4px"></div>
+            <!-- Timer bar -->
+            <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:10px">
+                <div id="og-timerBar" style="height:100%;background:var(--accent);border-radius:3px;transition:width .1s linear;width:100%"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                <div id="og-prog" style="font-size:0.85rem;color:var(--subtext)"></div>
+                <div id="og-timer" style="font-size:1.1rem;font-weight:bold;color:var(--accent)"></div>
+            </div>
+            <div style="font-size:0.85rem;color:var(--subtext);font-weight:bold;margin-bottom:4px" id="og-qLabel">🔤 İNGİLİZCE</div>
+            <div id="og-word" style="font-size:clamp(1.3rem,5vw,2rem);font-weight:bold;margin:8px 0 14px;text-align:center;line-height:1.3"></div>
+            <div id="og-opts" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
+            <div id="og-status" style="text-align:center;margin-top:10px;font-size:0.9rem;color:var(--warn);min-height:24px"></div>
+        </div>
+
+        <!-- Online Sonuç -->
+        <div id="onlineResult" style="display:none;text-align:center;padding:10px 0">
+            <div id="og-winnerIcon" style="font-size:3rem;margin-bottom:8px"></div>
+            <div id="og-winnerText" style="font-size:1.3rem;font-weight:bold;color:var(--accent);margin-bottom:16px"></div>
+            <div id="og-scoreBoard" style="margin-bottom:16px"></div>
+            <button class="btn btn-main" onclick="showDuelMode('online')">🔄 Tekrar Oyna</button>
+        </div>
+
+        <div class="card" id="duelSetup" style="display:none;">
+            <div style="font-size:1.2rem;font-weight:bold;margin-bottom:12px;text-align:center">📱 YEREL DÜELLO</div>
             <div style="font-size:0.85rem;color:var(--subtext);margin-bottom:8px;font-weight:bold">OYUNCU 1 İSMİ</div>
             <input id="p1name" class="search-box" placeholder="Oyuncu 1" style="margin-bottom:10px" value="Oyuncu 1">
             <div style="font-size:0.85rem;color:var(--subtext);margin-bottom:8px;font-weight:bold">OYUNCU 2 İSMİ</div>
@@ -401,13 +466,19 @@ const BUILTIN_DB = [{"en": "anti-aircraft missile battery", "tr": "uçaksavar f�
 
 // ─── HELPERS ───────────────────────────────────────────────────────────────
 function cleanDb(arr) {
-    return (arr||[]).map(w => {
+    return (arr||[]).map((w,i) => {
         if(!w) return null;
         let en = w.en||'', tr = w.tr||'';
-        if(en.includes('=')) { const i=en.indexOf('='); tr=en.substring(i+1).trim()||tr; en=en.substring(0,i).trim(); }
-        if(tr.includes('=')) { const i=tr.indexOf('='); tr=tr.substring(i+1).trim(); }
-        return (en&&tr)?{en,tr}:null;
+        if(en.includes('=')) { const i2=en.indexOf('='); tr=en.substring(i2+1).trim()||tr; en=en.substring(0,i2).trim(); }
+        if(tr.includes('=')) { const i2=tr.indexOf('='); tr=tr.substring(i2+1).trim(); }
+        // day alanı varsa koru, yoksa pozisyondan hesapla
+        const day = w.day || Math.ceil((i+1)/30);
+        return (en&&tr)?{en,tr,day}:null;
     }).filter(x=>x);
+}
+// db'deki kelimelere day alanı yoksa ekle
+function ensureDays(arr) {
+    return arr.map((w,i) => w.day ? w : {...w, day: Math.ceil((i+1)/30)});
 }
 function parseLines(val) {
     return val.split('\n').map(l => {
@@ -434,7 +505,7 @@ function save() {
 }
 
 // ─── STATE ──────────────────────────────────────────────────────────────────
-let db    = cleanDb(JSON.parse(localStorage.getItem('v18_db')    ||'[]'));
+let db    = ensureDays(cleanDb(JSON.parse(localStorage.getItem('v18_db')    ||'[]')));
 let done  = JSON.parse(localStorage.getItem('v18_done')  ||'[]');
 let fails = cleanDb(JSON.parse(localStorage.getItem('v18_fails') ||'[]'));
 let stats = JSON.parse(localStorage.getItem('v18_stats') ||'{"correct":0,"wrong":0,"bestStreak":0}');
@@ -475,7 +546,7 @@ function showTab(tab) {
     });
     if(tab==='stats')  renderStats();
     if(tab==='words')  renderWordList();
-    if(tab==='duel')   initDuel();
+    if(tab==='duel')   showDuelMode('online');
 }
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
@@ -483,7 +554,8 @@ function init() {
     const p=document.getElementById('dayPicker'); p.innerHTML='';
     if(!db.length) { p.innerHTML='<option>ÖNCE VERİ YÜKLEYİN</option>'; }
     else {
-        for(let i=1;i<=Math.ceil(db.length/30);i++) {
+        const totalDays = db.length ? Math.max(...db.map(w=>w.day||1)) : 0;
+        for(let i=1;i<=totalDays;i++) {
             const o=document.createElement('option'); o.value=i;
             o.innerText=(done.includes(i.toString())?"✓ ":"")+"GÜN "+i;
             p.appendChild(o);
@@ -520,11 +592,11 @@ function start(m) {
         cur=db.sort(()=>Math.random()-0.5).slice(0,100).map(w=>({word:w,isEn:Math.random()>0.5}));
     } else if(m==='day') {
         selectedDay=document.getElementById('dayPicker').value;
-        let raw=db.slice((selectedDay-1)*30,selectedDay*30);
+        let raw=db.filter(w=>(w.day||1)==parseInt(selectedDay));
         cur=[...raw.map(w=>({word:w,isEn:true})),...raw.map(w=>({word:w,isEn:false}))].sort(()=>Math.random()-0.5);
     } else {
         let pool=(m==='smart')?[]:db;
-        if(m==='smart') done.forEach(d=>pool.push(...db.slice((parseInt(d)-1)*30,parseInt(d)*30)));
+        if(m==='smart') done.forEach(d=>pool.push(...db.filter(w=>(w.day||1)===parseInt(d))));
         if(m==='fails') pool=fails;
         cur=pool.sort(()=>Math.random()-0.5).slice(0,30).map(w=>({word:w,isEn:Math.random()>0.5}));
     }
@@ -684,7 +756,7 @@ function renderStats() {
     // Gün barları
     const barBox=document.getElementById('st-days-bar');
     barBox.innerHTML='';
-    const totalDays=Math.ceil(db.length/30);
+    const totalDays=db.length ? Math.max(...db.map(w=>w.day||1)) : 0;
     for(let i=1;i<=Math.min(totalDays,10);i++) {
         const isDone=done.includes(i.toString());
         barBox.innerHTML+=`<div class="bar-wrap">
@@ -712,11 +784,12 @@ function buildDayFilter() {
     // mevcut seçimi koru
     const cur = sel.value;
     sel.innerHTML = '<option value="">📅 Tüm günler</option>';
-    const totalDays = Math.ceil(db.length / 30);
+    const totalDays = db.length ? Math.max(...db.map(w=>w.day||1)) : 0;
     for(let i = 1; i <= totalDays; i++) {
         const o = document.createElement('option');
         o.value = i;
-        o.innerText = (done.includes(i.toString()) ? "✓ " : "") + "GÜN " + i + " (" + (Math.min(i*30, db.length) - (i-1)*30) + " kelime)";
+        const cnt = db.filter(w=>(w.day||1)===i).length;
+        o.innerText = (done.includes(i.toString()) ? "✓ " : "") + "GÜN " + i + " (" + cnt + " kelime)";
         sel.appendChild(o);
     }
     if(cur) sel.value = cur;
@@ -729,7 +802,7 @@ function renderWordList() {
     let pool = db;
     if(dayVal) {
         const d = parseInt(dayVal);
-        pool = db.slice((d-1)*30, d*30);
+        pool = db.filter(w=>(w.day||1)===d);
     }
     const filtered = pool.filter(w => w.en.toLowerCase().includes(q) || w.tr.toLowerCase().includes(q));
     document.getElementById('wordCount').innerText = filtered.length + " / " + db.length + " kelime";
@@ -762,7 +835,7 @@ function saveEdit() {
     const en=document.getElementById('editEn').value.trim();
     const tr=document.getElementById('editTr').value.trim();
     if(!en||!tr) return alert("Boş bırakma!");
-    db[editIdx]={en,tr}; save(); closeEdit(); renderWordList();
+    db[editIdx]={en,tr,day:db[editIdx].day}; save(); closeEdit(); renderWordList();
 }
 
 // ─── DATA ──────────────────────────────────────────────────────────────────────
@@ -770,7 +843,8 @@ function saveRaw() {
     const val=document.getElementById('rawBox').value.trim();
     const newWords=parseLines(val);
     if(!newWords.length) return alert("Geçerli kelime bulunamadı!");
-    newWords.forEach(nw=>{ const ei=db.findIndex(w=>w.en===nw.en); if(ei>=0)db[ei]=nw; else db.push(nw); });
+    const lastDay = db.length ? Math.max(...db.map(w=>w.day||1)) : 1;
+    newWords.forEach(nw=>{ const ei=db.findIndex(w=>w.en===nw.en); if(ei>=0)db[ei]={...nw,day:db[ei].day}; else db.push({...nw,day:lastDay}); });
     save(); alert("Eklendi: "+newWords.length+" kelime\nToplam: "+db.length+" kelime");
     document.getElementById('rawBox').value=''; init();
 }
@@ -813,19 +887,26 @@ let duelIdx=0, duelTimer=null, duelTimeLeft=0, duelStartTime=0;
 const DUEL_TIME = 5; // saniye başına (şimşek modu!)
 
 function initDuel() {
-    // Gün seçiciyi doldur
+    // Yerel düello gün seçiciyi doldur
     const sel = document.getElementById('duelDay');
-    sel.innerHTML = '';
-    const totalDays = Math.ceil(db.length/30);
-    for(let i=1;i<=totalDays;i++) {
-        const o = document.createElement('option');
-        o.value=i; o.innerText='GÜN '+i+' ('+(Math.min(i*30,db.length)-(i-1)*30)+' kelime)';
-        sel.appendChild(o);
+    if(sel) {
+        sel.innerHTML = '';
+        const totalDays = db.length ? Math.max(...db.map(w=>w.day||1)) : 0;
+        for(let i=1;i<=totalDays;i++) {
+            const o = document.createElement('option');
+            const cnt = db.filter(w=>(w.day||1)===i).length;
+            o.value=i; o.innerText='GÜN '+i+' ('+cnt+' kelime)';
+            sel.appendChild(o);
+        }
     }
     document.getElementById('duelSetup').style.display='block';
     document.getElementById('duelTurn').style.display='none';
     document.getElementById('duelGame').style.display='none';
     document.getElementById('duelResult').style.display='none';
+    document.getElementById('onlineDuelSetup').style.display='none';
+    document.getElementById('onlineWaiting').style.display='none';
+    document.getElementById('onlineGame').style.display='none';
+    document.getElementById('onlineResult').style.display='none';
 }
 
 function setDuelQ(n) {
@@ -835,7 +916,7 @@ function setDuelQ(n) {
 
 function startDuel() {
     const day = parseInt(document.getElementById('duelDay').value);
-    const pool = db.slice((day-1)*30, day*30);
+    const pool = db.filter(w=>(w.day||1)===day);
     if(!pool.length) return alert('Bu günde kelime yok!');
     // Her oyuncu için aynı sorular (karıştırılmış ama seed'li - shuffle once)
     const shuffled = pool.slice().sort(()=>Math.random()-.5).slice(0, Math.min(duelQCount, pool.length));
@@ -1029,6 +1110,334 @@ function showDuelResult() {
         </div>`;
 }
 
+
+
+// ─── ONLINE DÜELLO ────────────────────────────────────────────────────────────
+let onlineDuelQCount = 10;
+let currentRoomCode = null;
+let myPlayerId = null;
+let myPlayerName = null;
+let isHost = false;
+let roomUnsubscribe = null;
+let ogTimer = null;
+let ogQuestions = [];
+let ogCurrentQ = 0;
+let ogAnswered = false;
+let ogTimeLeft = 0;
+const OG_TIME = 15; // saniye
+
+function showDuelMode(mode) {
+    document.getElementById('onlineDuelSetup').style.display = mode==='online' ? 'block' : 'none';
+    document.getElementById('duelSetup').style.display = mode==='local' ? 'block' : 'none';
+    document.getElementById('onlineWaiting').style.display = 'none';
+    document.getElementById('onlineGame').style.display = 'none';
+    document.getElementById('onlineResult').style.display = 'none';
+    if(mode==='online') {
+        // Gün seçiciyi doldur
+        const sel = document.getElementById('onlineDuelDay');
+        sel.innerHTML = '';
+        const totalDays = db.length ? Math.max(...db.map(w=>w.day||1)) : 0;
+        for(let i=1;i<=totalDays;i++) {
+            const o = document.createElement('option');
+            const cnt = db.filter(w=>(w.day||1)===i).length;
+            o.value=i; o.innerText='GÜN '+i+' ('+cnt+' kelime)';
+            sel.appendChild(o);
+        }
+    }
+    if(mode==='local') initDuel();
+}
+
+function setOnlineDuelQ(n) {
+    onlineDuelQCount = n;
+    document.querySelectorAll('[data-odq]').forEach(b => b.classList.toggle('active', parseInt(b.dataset.odq)===n));
+}
+
+function genRoomCode() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    return Array.from({length:4}, ()=>chars[Math.floor(Math.random()*chars.length)]).join('');
+}
+
+async function createOnlineRoom() {
+    if(!window.firebaseAuth || !window.firebaseAuth.currentUser) {
+        return alert('Önce Google ile giriş yapmalısın!');
+    }
+    const user = window.firebaseAuth.currentUser;
+    myPlayerId = user.uid;
+    myPlayerName = user.displayName || 'Oyuncu';
+    isHost = true;
+
+    const day = parseInt(document.getElementById('onlineDuelDay').value);
+    const pool = db.filter(w=>(w.day||1)===day);
+    if(!pool.length) return alert('Bu günde kelime yok!');
+
+    const shuffled = pool.slice().sort(()=>Math.random()-.5).slice(0, Math.min(onlineDuelQCount, pool.length));
+    const questions = shuffled.map(w => ({en:w.en, tr:w.tr, isEn:Math.random()>.5}));
+
+    const code = genRoomCode();
+    currentRoomCode = code;
+
+    const { doc, setDoc } = window.firestoreFunctions;
+    const roomRef = doc(window.firebaseDb, 'rooms', code);
+    await setDoc(roomRef, {
+        host: myPlayerId,
+        status: 'waiting',
+        questions: questions,
+        players: { [myPlayerId]: { name: myPlayerName, score: 0, answers: {} } },
+        createdAt: Date.now()
+    });
+
+    document.getElementById('onlineDuelSetup').style.display = 'none';
+    document.getElementById('onlineWaiting').style.display = 'block';
+    document.getElementById('roomCodeDisplay').innerText = code;
+    document.getElementById('startOnlineBtn').style.display = 'block';
+
+    listenRoom(code);
+}
+
+async function joinOnlineRoom() {
+    if(!window.firebaseAuth || !window.firebaseAuth.currentUser) {
+        return alert('Önce Google ile giriş yapmalısın!');
+    }
+    const user = window.firebaseAuth.currentUser;
+    myPlayerId = user.uid;
+    myPlayerName = user.displayName || 'Oyuncu';
+    isHost = false;
+
+    const code = document.getElementById('joinRoomCode').value.trim().toUpperCase();
+    if(code.length !== 4) return alert('4 haneli kod gir!');
+
+    const { doc, getDoc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+    const roomRef = doc(window.firebaseDb, 'rooms', code);
+    const snap = await getDoc(roomRef);
+
+    if(!snap.exists()) return alert('Oda bulunamadı!');
+    const data = snap.data();
+    if(data.status !== 'waiting') return alert('Oyun zaten başlamış!');
+    const playerCount = Object.keys(data.players||{}).length;
+    if(playerCount >= 5) return alert('Oda dolu! (Maks 5 oyuncu)');
+
+    currentRoomCode = code;
+    await updateDoc(roomRef, {
+        [`players.${myPlayerId}`]: { name: myPlayerName, score: 0, answers: {} }
+    });
+
+    document.getElementById('onlineDuelSetup').style.display = 'none';
+    document.getElementById('onlineWaiting').style.display = 'block';
+    document.getElementById('roomCodeDisplay').innerText = code;
+    document.getElementById('startOnlineBtn').style.display = 'none';
+
+    listenRoom(code);
+}
+
+function listenRoom(code) {
+    if(roomUnsubscribe) roomUnsubscribe();
+    import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js").then(({doc, onSnapshot}) => {
+        const roomRef = doc(window.firebaseDb, 'rooms', code);
+        roomUnsubscribe = onSnapshot(roomRef, (snap) => {
+            if(!snap.exists()) return;
+            const data = snap.data();
+            const players = data.players || {};
+            const playerList = Object.entries(players);
+
+            // Bekleme odasındayken oyuncu listesini güncelle
+            if(data.status === 'waiting') {
+                const box = document.getElementById('waitingPlayers');
+                if(box) {
+                    box.innerHTML = playerList.map(([id, p]) =>
+                        `<span style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:0.85rem">
+                            ${id===data.host?'👑 ':'👤 '}${p.name}
+                        </span>`
+                    ).join('');
+                }
+                const statusEl = document.getElementById('waitingStatus');
+                if(statusEl) statusEl.innerText = playerList.length + '/5 oyuncu bağlandı';
+            }
+
+            // Oyun başladıysa
+            if(data.status === 'playing' && document.getElementById('onlineWaiting').style.display !== 'none') {
+                document.getElementById('onlineWaiting').style.display = 'none';
+                ogQuestions = data.questions;
+                ogCurrentQ = 0;
+                startOnlineGame(data);
+            }
+
+            // Oyun devam ediyorsa skor bandını güncelle
+            if(data.status === 'playing' && document.getElementById('onlineGame').style.display !== 'none') {
+                updateScoreBand(players);
+            }
+
+            // Oyun bittiyse
+            if(data.status === 'finished') {
+                clearInterval(ogTimer);
+                showOnlineResult(players, data);
+            }
+        });
+    });
+}
+
+async function hostStartGame() {
+    if(!isHost) return;
+    const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+    const roomRef = doc(window.firebaseDb, 'rooms', currentRoomCode);
+    await updateDoc(roomRef, { status: 'playing' });
+}
+
+function startOnlineGame(data) {
+    document.getElementById('onlineGame').style.display = 'block';
+    const players = data.players || {};
+    updateScoreBand(players);
+    renderOnlineQuestion();
+}
+
+function updateScoreBand(players) {
+    const band = document.getElementById('og-scoreBand');
+    if(!band) return;
+    const sorted = Object.entries(players).sort((a,b) => b[1].score - a[1].score);
+    band.innerHTML = sorted.map(([id, p]) =>
+        `<div style="flex:1;min-width:70px;background:var(--card);border:2px solid ${id===myPlayerId?'var(--accent)':'var(--border)'};border-radius:10px;padding:6px;text-align:center">
+            <div style="font-size:0.7rem;font-weight:bold;color:var(--subtext);overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${p.name.split(' ')[0]}</div>
+            <div style="font-size:1.5rem;font-weight:bold;color:var(--accent)">${p.score||0}</div>
+        </div>`
+    ).join('');
+}
+
+function renderOnlineQuestion() {
+    clearInterval(ogTimer);
+    ogAnswered = false;
+
+    if(ogCurrentQ >= ogQuestions.length) {
+        endOnlineGame(); return;
+    }
+
+    const task = ogQuestions[ogCurrentQ];
+    const q = task.isEn ? task.en : task.tr;
+    const a = task.isEn ? task.tr : task.en;
+
+    document.getElementById('og-qLabel').innerText = task.isEn ? '🔤 İNGİLİZCE' : '🇹🇷 TÜRKÇE';
+    document.getElementById('og-word').innerText = q;
+    document.getElementById('og-prog').innerText = (ogCurrentQ+1)+'/'+ogQuestions.length;
+    document.getElementById('og-status').innerText = '';
+
+    // Şıklar
+    let opts = [a];
+    const aGrp = getLenGroup(a);
+    let cands = db.map(r=>task.isEn?r.tr:r.en)
+        .filter(p=>p&&p!==q&&p!==a&&getLenGroup(p)===aGrp)
+        .sort(()=>Math.random()-.5);
+    for(const c of cands){if(opts.length>=4)break;if(!opts.includes(c))opts.push(c);}
+    if(opts.length<4){
+        const fb=db.map(r=>task.isEn?r.tr:r.en).filter(p=>p&&p!==q&&!opts.includes(p)).sort(()=>Math.random()-.5);
+        for(const c of fb){if(opts.length>=4)break;opts.push(c);}
+    }
+    opts.sort(()=>Math.random()-.5);
+
+    const box = document.getElementById('og-opts');
+    box.innerHTML = '';
+    box.style.pointerEvents = 'auto';
+    opts.forEach(o => {
+        const btn = document.createElement('button');
+        btn.className = 'opt'; btn.innerText = o;
+        btn.onclick = () => answerOnline(o, a, btn, box);
+        box.appendChild(btn);
+    });
+
+    // Timer
+    ogTimeLeft = OG_TIME * 10;
+    const bar = document.getElementById('og-timerBar');
+    const timerEl = document.getElementById('og-timer');
+    bar.style.width = '100%';
+    bar.style.background = 'var(--accent)';
+    timerEl.innerText = OG_TIME + 's';
+
+    ogTimer = setInterval(() => {
+        ogTimeLeft--;
+        const pct = ogTimeLeft / (OG_TIME*10) * 100;
+        bar.style.width = pct + '%';
+        timerEl.innerText = Math.ceil(ogTimeLeft/10) + 's';
+        if(pct < 30) bar.style.background = '#da3633';
+        if(ogTimeLeft <= 0) {
+            clearInterval(ogTimer);
+            box.style.pointerEvents = 'none';
+            Array.from(box.children).forEach(b => { if(b.innerText===a) b.classList.add('reveal'); });
+            document.getElementById('og-status').innerText = '⏰ Süre doldu!';
+            setTimeout(() => { ogCurrentQ++; renderOnlineQuestion(); }, 1200);
+        }
+    }, 100);
+}
+
+async function answerOnline(chosen, correct, btn, box) {
+    if(ogAnswered) return;
+    ogAnswered = true;
+    clearInterval(ogTimer);
+    box.style.pointerEvents = 'none';
+
+    const isCorrect = chosen === correct;
+    btn.classList.add(isCorrect ? 'correct' : 'wrong');
+    if(!isCorrect) Array.from(box.children).forEach(b => { if(b.innerText===correct) b.classList.add('reveal'); });
+
+    document.getElementById('og-status').innerText = isCorrect ? '✅ Doğru!' : '❌ Yanlış!';
+
+    if(isCorrect) {
+        // Skoru Firestore'a yaz
+        const { doc, updateDoc, increment } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+        try {
+            await updateDoc(doc(window.firebaseDb, 'rooms', currentRoomCode), {
+                [`players.${myPlayerId}.score`]: increment(1)
+            });
+        } catch(e) { console.warn(e); }
+    }
+
+    setTimeout(() => { ogCurrentQ++; renderOnlineQuestion(); }, 900);
+}
+
+async function endOnlineGame() {
+    if(!isHost) return;
+    try {
+        const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+        await updateDoc(doc(window.firebaseDb, 'rooms', currentRoomCode), { status: 'finished' });
+    } catch(e) { console.warn(e); }
+}
+
+function showOnlineResult(players, data) {
+    document.getElementById('onlineGame').style.display = 'none';
+    document.getElementById('onlineResult').style.display = 'block';
+
+    const sorted = Object.entries(players).sort((a,b) => b[1].score - a[1].score);
+    const winner = sorted[0];
+    const isWinner = winner[0] === myPlayerId;
+    const isTie = sorted.length > 1 && sorted[0][1].score === sorted[1][1].score;
+
+    document.getElementById('og-winnerIcon').innerText = isTie ? '🤝' : (isWinner ? '🏆' : '🥇');
+    document.getElementById('og-winnerText').innerText = isTie ? 'BERABERE!' : winner[1].name + ' KAZANDI!';
+
+    const medals = ['🥇','🥈','🥉','4️⃣','5️⃣'];
+    document.getElementById('og-scoreBoard').innerHTML = sorted.map(([id,p],i) =>
+        `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;
+            background:var(--card);border:2px solid ${id===myPlayerId?'var(--accent)':'var(--border)'};
+            border-radius:10px;margin-bottom:8px">
+            <div style="display:flex;align-items:center;gap:10px">
+                <span style="font-size:1.4rem">${medals[i]}</span>
+                <span style="font-weight:bold">${p.name}</span>
+                ${id===myPlayerId?'<span style="font-size:0.75rem;background:var(--accent);color:white;padding:2px 6px;border-radius:10px">Sen</span>':''}
+            </div>
+            <span style="font-size:1.5rem;font-weight:bold;color:var(--accent)">${p.score||0}</span>
+        </div>`
+    ).join('');
+
+    if(roomUnsubscribe) { roomUnsubscribe(); roomUnsubscribe = null; }
+}
+
+async function cancelOnlineRoom() {
+    if(roomUnsubscribe) { roomUnsubscribe(); roomUnsubscribe = null; }
+    if(currentRoomCode && isHost) {
+        try {
+            const { doc, deleteDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+            await deleteDoc(doc(window.firebaseDb, 'rooms', currentRoomCode));
+        } catch(e) {}
+    }
+    currentRoomCode = null;
+    showDuelMode('online');
+}
 
 // ─── PWA INSTALL ──────────────────────────────────────────────────────────────
 let deferredPrompt = null;
