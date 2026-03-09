@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -104,7 +103,12 @@ body { background:var(--bg); color:var(--text); font-family:-apple-system,sans-s
 .header-btns { display:flex; gap:8px; }
 .icon-btn { background:var(--border); border:none; color:var(--text); padding:5px 10px; border-radius:8px; cursor:pointer; font-size:1rem; }
 
-.container { width:95%; max-width:600px; padding: clamp(10px, 4vw, 20px); margin:0 auto; }
+.container { width:95%; max-width:900px; padding: clamp(10px, 4vw, 20px); margin:0 auto; }
+@media (min-width: 700px) {
+    .opt { font-size:1.1rem; padding:14px; }
+    .word-display { font-size:2.8rem; }
+    body { font-size: clamp(14px, 1.5vw, 18px); }
+}
 
 /* NAV TABS */
 .nav-tabs { display:flex; gap:0; margin-bottom:15px; border:1px solid var(--border); border-radius:10px; overflow:hidden; }
@@ -1174,20 +1178,3 @@ init();
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
