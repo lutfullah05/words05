@@ -125,7 +125,7 @@ body { background:var(--bg); color:var(--text); font-family:-apple-system,sans-s
 .m-btn.active { background:var(--accent); color:white; border-color:var(--accent); }
 
 /* DIFFICULTY */
-.diff-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:5px; margin-bottom:15px; }
+.diff-row { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:5px; margin-bottom:15px; }
 .d-btn { padding: clamp(8px,2.5vw,12px); border:1px solid var(--border); border-radius:8px; cursor:pointer; font-size:0.85rem; font-weight:bold; color:var(--subtext); background:var(--card); transition:0.3s; }
 .d-btn.active { color:white; border-color:currentColor; }
 .d-btn[data-d="easy"].active  { background:#238636; }
@@ -206,13 +206,6 @@ textarea { width:100%; height:90px; background:var(--bg); color:var(--accent); b
 </style>
 </head>
 <body>
-  <!-- Google Giriş Butonu -->
-<div id="auth-bar" style="position:fixed;top:10px;left:0;right:0;background:#1a1a2e;padding:8px;text-align:center;z-index:9999;display:flex;align-items:center;justify-content:center;gap:10px;">
-  <span id="user-name" style="color:white;font-size:14px;"></span>
-  <button id="login-btn" onclick="googleGiris()" style="background:#4285f4;color:white;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px;">🔑 Google ile Giriş</button>
-  <button id="logout-btn" onclick="googleCikis()" style="display:none;background:#e53935;color:white;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px;">Çıkış</button>
-</div>
-<div style="height:40px;"></div>
 <div class="app-wrapper" style="padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)">
 
 <div id="mot">🔥</div>
@@ -220,7 +213,10 @@ textarea { width:100%; height:90px; background:var(--bg); color:var(--accent); b
 <!-- HEADER -->
 <div class="header">
     <div class="header-title" id="hT">ALAN 12 • TRUE ZEN v4</div>
-    <div class="header-btns">
+    <div class="header-btns" style="display:flex;align-items:center;gap:8px;">
+        <span id="user-name" style="font-size:0.85rem;color:var(--subtext);"></span>
+        <button id="login-btn" onclick="googleGiris()" style="background:#4285f4;color:white;border:none;padding:5px 12px;border-radius:6px;cursor:pointer;font-size:0.8rem;font-weight:bold;">🔑 Giriş</button>
+        <button id="logout-btn" onclick="googleCikis()" style="display:none;background:#e53935;color:white;border:none;padding:5px 12px;border-radius:6px;cursor:pointer;font-size:0.8rem;font-weight:bold;">Çıkış</button>
         <button class="icon-btn" id="soundBtn" onclick="toggleSound()" title="Ses">🔊</button>
         <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" title="Tema">🌙</button>
         <button class="icon-btn" id="homeBtn" style="display:none;" onclick="goHome()">🏠</button>
@@ -280,7 +276,7 @@ textarea { width:100%; height:90px; background:var(--bg); color:var(--accent); b
             <div class="stat-title">📅 GÜN İLERLEMESİ</div>
             <div id="st-days-bar"></div>
         </div>
-        <div style="display:flex;gap:8px;margin-top:4px">
+        <div style="display:flex;gap:8px;margin-top:4px;margin-bottom:80px;">
             <button class="btn btn-error" style="flex:1" onclick="clearFails()">❌ HATALARI TEMİZLE</button>
             <button class="btn btn-error" style="flex:1;opacity:0.7" onclick="resetStats()">🗑️ TÜMÜNÜ SIFIRLA</button>
         </div>
