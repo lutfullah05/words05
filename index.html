@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -1087,26 +1088,78 @@ init();
   window.googleCikis = googleCikis;
 </script>
   <script>
+  // Sonsuz reload döngüsünü önlemek için flag
+  const SYNC_LOADED_KEY = 'syncLoadedAt';
+
+  async function loadFromFirestore(user) {
+    try {
+      const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+      const userRef = doc(window.firebaseDb, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (userSnap.exists()) {
+        const data = userSnap.data();
+        if (data.localStorage) {
+          // Firestore'daki verinin timestamp'ini kontrol et
+          const remoteTs = data.updatedAt || 0;
+          const localTs  = parseInt(localStorage.getItem('updatedAt') || '0');
+
+          // Sadece uzak veri daha yeniyse yükle
+          if (remoteTs > localTs) {
+            Object.keys(data.localStorage).forEach(key => {
+              localStorage.setItem(key, data.localStorage[key]);
+            });
+            localStorage.setItem('updatedAt', String(remoteTs));
+            // Reload bayrağı koy, tekrar reload etmesin
+            sessionStorage.setItem(SYNC_LOADED_KEY, '1');
+            location.reload();
+            return;
+          }
+        }
+      }
+    } catch(e) {
+      console.warn('Firestore yükleme hatası:', e);
+    }
+  }
+
+  async function saveToFirestore() {
+    const user = window.firebaseAuth && window.firebaseAuth.currentUser;
+    if (!user || !window.firebaseDb) return;
+    try {
+      const { doc, setDoc } = window.firestoreFunctions;
+      const userRef = doc(window.firebaseDb, "users", user.uid);
+      const localData = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        localData[key] = localStorage.getItem(key);
+      }
+      const now = Date.now();
+      localStorage.setItem('updatedAt', String(now));
+      localData['updatedAt'] = String(now);
+      await setDoc(userRef, { localStorage: localData, updatedAt: now });
+    } catch(e) {
+      console.warn('Firestore kayıt hatası:', e);
+    }
+  }
+
+  // Orijinal save() fonksiyonunu Firestore'a da yazan versiyonla sarmalıyoruz
+  const _origSave = window.save;
+  window.save = function() {
+    if(_origSave) _origSave();
+    saveToFirestore();
+  };
+
   // Kullanıcı girişini takip et
   window.onAuthStateChanged(window.firebaseAuth, async (user) => {
     if (user) {
       document.getElementById('user-name').textContent = user.displayName;
       document.getElementById('login-btn').style.display = 'none';
       document.getElementById('logout-btn').style.display = 'inline-block';
-      
-      // Firestore'dan veriyi yükle
-      const { doc, getDoc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
-      const userRef = doc(window.firebaseDb, "users", user.uid);
-      const userSnap = await getDoc(userRef);
-      
-      if (userSnap.exists()) {
-        const data = userSnap.data();
-        if (data.localStorage) {
-          Object.keys(data.localStorage).forEach(key => {
-            localStorage.setItem(key, data.localStorage[key]);
-          });
-          location.reload();
-        }
+
+      // Bu oturumda daha önce yüklemediyse Firestore'dan çek
+      if (!sessionStorage.getItem(SYNC_LOADED_KEY)) {
+        sessionStorage.setItem(SYNC_LOADED_KEY, '1');
+        await loadFromFirestore(user);
       }
     } else {
       document.getElementById('user-name').textContent = '';
@@ -1115,20 +1168,8 @@ init();
     }
   });
 
- // Her 30 saniyede veriyi Firestore'a kaydet
-setInterval(() => {
-  const user = window.firebaseAuth.currentUser;
-  if (user && window.firebaseDb) {
-    const { doc, setDoc } = window.firestoreFunctions;
-    const userRef = doc(window.firebaseDb, "users", user.uid);
-    const localData = {};
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      localData[key] = localStorage.getItem(key);
-    }
-    setDoc(userRef, { localStorage: localData });
-  }
-}, 30000);
+  // Her 60 saniyede bir otomatik yedek (30s çok sık, 60s yeterli)
+  setInterval(saveToFirestore, 60000);
 </script>
 </body>
 
