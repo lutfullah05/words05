@@ -429,20 +429,7 @@ function save() {
     localStorage.setItem('v18_fails', JSON.stringify(fails));
     localStorage.setItem('v18_stats', JSON.stringify(stats));
     // Firestore'a da kaydet
-    try {
-        const user = window.firebaseAuth && window.firebaseAuth.currentUser;
-        if (user && window.firebaseDb && window.firestoreFunctions) {
-            const { doc, setDoc } = window.firestoreFunctions;
-            const now = Date.now();
-            localStorage.setItem('updatedAt', String(now));
-            const localData = {};
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                localData[key] = localStorage.getItem(key);
-            }
-            setDoc(doc(window.firebaseDb, 'users', user.uid), { localStorage: localData, updatedAt: now });
-        }
-    } catch(e) { console.warn('Firestore kayit hatasi:', e); }
+    if (window._saveToFirestore) window._saveToFirestore();
 }
 
 // ─── STATE ──────────────────────────────────────────────────────────────────
@@ -1102,31 +1089,34 @@ init();
   window.googleGiris = googleGiris;
   window.googleCikis = googleCikis;
 </script>
-  <script>
-  // Sonsuz reload döngüsünü önlemek için flag
+  <script type="module">
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
+  // Zaten başlatılmış app'i kullan
+  const app = getApps()[0];
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
   const SYNC_LOADED_KEY = 'syncLoadedAt';
 
   async function loadFromFirestore(user) {
     try {
-      const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
-      const userRef = doc(window.firebaseDb, "users", user.uid);
+      const userRef = doc(db, "users", user.uid);
       const userSnap = await getDoc(userRef);
-
       if (userSnap.exists()) {
         const data = userSnap.data();
         if (data.localStorage) {
           const remoteTs = typeof data.updatedAt === 'number' ? data.updatedAt : parseInt(data.updatedAt || '0');
           const localTs  = parseInt(localStorage.getItem('updatedAt') || '0');
-
-          // Her zaman en yeni veriyi al
-          if (remoteTs >= localTs) {
+          if (remoteTs > localTs) {
             Object.keys(data.localStorage).forEach(key => {
               localStorage.setItem(key, data.localStorage[key]);
             });
             localStorage.setItem('updatedAt', String(remoteTs));
             sessionStorage.setItem(SYNC_LOADED_KEY, '1');
             location.reload();
-            return;
           }
         }
       }
@@ -1135,34 +1125,29 @@ init();
     }
   }
 
-  async function saveToFirestore() {
-    const user = window.firebaseAuth && window.firebaseAuth.currentUser;
-    if (!user || !window.firebaseDb) return;
+  // Global saveToFirestore — save() içinden çağrılıyor
+  window._saveToFirestore = async function() {
+    const user = auth.currentUser;
+    if (!user) return;
     try {
-      const { doc, setDoc } = window.firestoreFunctions;
-      const userRef = doc(window.firebaseDb, "users", user.uid);
+      const now = Date.now();
+      localStorage.setItem('updatedAt', String(now));
       const localData = {};
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         localData[key] = localStorage.getItem(key);
       }
-      const now = Date.now();
-      localStorage.setItem('updatedAt', String(now));
-      localData['updatedAt'] = String(now);
-      await setDoc(userRef, { localStorage: localData, updatedAt: now });
+      await setDoc(doc(db, "users", user.uid), { localStorage: localData, updatedAt: now });
     } catch(e) {
       console.warn('Firestore kayıt hatası:', e);
     }
-  }
+  };
 
-  // Kullanıcı girişini takip et
-  window.onAuthStateChanged(window.firebaseAuth, async (user) => {
+  onAuthStateChanged(auth, async (user) => {
     if (user) {
       document.getElementById('user-name').textContent = user.displayName;
       document.getElementById('login-btn').style.display = 'none';
       document.getElementById('logout-btn').style.display = 'inline-block';
-
-      // Bu oturumda daha önce yüklemediyse Firestore'dan çek
       if (!sessionStorage.getItem(SYNC_LOADED_KEY)) {
         sessionStorage.setItem(SYNC_LOADED_KEY, '1');
         await loadFromFirestore(user);
@@ -1174,8 +1159,7 @@ init();
     }
   });
 
-  // Her 60 saniyede bir otomatik yedek (30s çok sık, 60s yeterli)
-  setInterval(saveToFirestore, 60000);
+  setInterval(() => window._saveToFirestore && window._saveToFirestore(), 60000);
 </script>
 </body>
 
