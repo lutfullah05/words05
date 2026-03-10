@@ -219,7 +219,7 @@ textarea { width:100%; height:90px; background:var(--bg); color:var(--accent); b
     <div id="installBtn" onclick="installApp()" style="display:none;width:100%;padding: clamp(10px,3vw,14px);background:linear-gradient(135deg,#58a6ff,#3fb950);color:white;border:none;border-radius:10px;font-size:0.95rem;font-weight:bold;cursor:pointer;margin-bottom:10px;text-align:center">
         📲 Ana Ekrana Ekle (Uygulama Olarak Aç)
     </div>
-    <div class="nav-tabs">
+    <div class="nav-tabs" style="display:flex;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;">
         <button class="nav-tab active" onclick="showTab('play')">🎮 OYNA</button>
         <button class="nav-tab" onclick="showTab('stats')">📊 İSTATİSTİK</button>
         <button class="nav-tab" onclick="showTab('words')">📚 KELİMELER</button>
@@ -1563,6 +1563,7 @@ init();
 </body>
 
 </html>
+
 
 
 
