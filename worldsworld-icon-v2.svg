@@ -1,0 +1,200 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0D47A1"/>
+      <stop offset="50%" style="stop-color:#1565C0"/>
+      <stop offset="100%" style="stop-color:#0A2E6E"/>
+    </linearGradient>
+    <radialGradient id="globeGrad" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" style="stop-color:#42A5F5"/>
+      <stop offset="60%" style="stop-color:#1E88E5"/>
+      <stop offset="100%" style="stop-color:#0D47A1"/>
+    </radialGradient>
+    <radialGradient id="globeShine" cx="30%" cy="25%" r="45%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.45"/>
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0"/>
+    </radialGradient>
+    <linearGradient id="wwGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700"/>
+      <stop offset="50%" style="stop-color:#FFA000"/>
+      <stop offset="100%" style="stop-color:#FF6F00"/>
+    </linearGradient>
+    <linearGradient id="bubble1Grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00E676"/>
+      <stop offset="100%" style="stop-color:#00C853"/>
+    </linearGradient>
+    <linearGradient id="bubble2Grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF6D00"/>
+      <stop offset="100%" style="stop-color:#FF3D00"/>
+    </linearGradient>
+    <linearGradient id="bubble3Grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E040FB"/>
+      <stop offset="100%" style="stop-color:#AA00FF"/>
+    </linearGradient>
+    <linearGradient id="bubble4Grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFEB3B"/>
+      <stop offset="100%" style="stop-color:#F9A825"/>
+    </linearGradient>
+    <linearGradient id="bubble5Grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00B0FF"/>
+      <stop offset="100%" style="stop-color:#0091EA"/>
+    </linearGradient>
+    <linearGradient id="shineOverlay" x1="0%" y1="0%" x2="40%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.18"/>
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="wwGlow">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="bubbleShadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+    <filter id="globeShadow">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+    <clipPath id="appShape">
+      <rect width="512" height="512" rx="115" ry="115"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#appShape)">
+    <!-- Background -->
+    <rect width="512" height="512" fill="url(#bgGrad)"/>
+
+```
+<!-- Background decorative circles -->
+<circle cx="430" cy="70" r="130" fill="#1976D2" opacity="0.2"/>
+<circle cx="60" cy="450" r="110" fill="#0D47A1" opacity="0.25"/>
+
+<!-- Stars -->
+<circle cx="80" cy="90" r="2.5" fill="#ffffff" opacity="0.6"/>
+<circle cx="150" cy="55" r="2" fill="#ffffff" opacity="0.5"/>
+<circle cx="440" cy="120" r="3" fill="#ffffff" opacity="0.5"/>
+<circle cx="465" cy="75" r="2" fill="#ffffff" opacity="0.4"/>
+<circle cx="55" cy="200" r="2" fill="#ffffff" opacity="0.4"/>
+<circle cx="395" cy="415" r="2.5" fill="#ffffff" opacity="0.4"/>
+<circle cx="105" cy="375" r="2" fill="#ffffff" opacity="0.4"/>
+<circle cx="355" cy="58" r="2" fill="#ffffff" opacity="0.35"/>
+
+<!-- Globe -->
+<g transform="translate(256, 230)" filter="url(#globeShadow)">
+  <circle cx="0" cy="0" r="130" fill="url(#globeGrad)"/>
+  <!-- Land masses -->
+  <ellipse cx="-42" cy="-18" rx="25" ry="40" fill="#4CAF50" opacity="0.85" transform="rotate(-15,-42,-18)"/>
+  <ellipse cx="-32" cy="36" rx="18" ry="30" fill="#388E3C" opacity="0.8" transform="rotate(10,-32,36)"/>
+  <ellipse cx="18" cy="-28" rx="20" ry="26" fill="#66BB6A" opacity="0.8" transform="rotate(5,18,-28)"/>
+  <ellipse cx="28" cy="22" rx="16" ry="32" fill="#4CAF50" opacity="0.75" transform="rotate(-5,28,22)"/>
+  <ellipse cx="65" cy="-22" rx="40" ry="26" fill="#43A047" opacity="0.8" transform="rotate(-10,65,-22)"/>
+  <ellipse cx="88" cy="8" rx="22" ry="17" fill="#388E3C" opacity="0.7"/>
+  <ellipse cx="75" cy="58" rx="18" ry="13" fill="#4CAF50" opacity="0.7" transform="rotate(15,75,58)"/>
+  <!-- Grid lines -->
+  <ellipse cx="0" cy="0" rx="130" ry="28" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.2"/>
+  <ellipse cx="0" cy="-50" rx="116" ry="20" fill="none" stroke="#ffffff" stroke-width="0.8" opacity="0.15"/>
+  <ellipse cx="0" cy="50" rx="116" ry="20" fill="none" stroke="#ffffff" stroke-width="0.8" opacity="0.15"/>
+  <line x1="0" y1="-130" x2="0" y2="130" stroke="#ffffff" stroke-width="1" opacity="0.2"/>
+  <line x1="-130" y1="0" x2="130" y2="0" stroke="#ffffff" stroke-width="1" opacity="0.2"/>
+  <!-- Globe outline & shine -->
+  <circle cx="0" cy="0" r="130" fill="none" stroke="#90CAF9" stroke-width="2" opacity="0.45"/>
+  <circle cx="0" cy="0" r="130" fill="url(#globeShine)"/>
+  <!-- Slow globe rotation shimmer -->
+  <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="30s" repeatCount="indefinite"/>
+</g>
+
+<!-- WW Letters -->
+<g filter="url(#wwGlow)" transform="translate(256, 248)">
+  <text x="0" y="18"
+    font-family="'Arial Black', Impact, sans-serif"
+    font-size="100" font-weight="900"
+    fill="url(#wwGrad)" text-anchor="middle" letter-spacing="-4"
+    style="paint-order:stroke;stroke:#7B3F00;stroke-width:4px;">WW</text>
+</g>
+
+<!-- Orbit ring -->
+<g transform="translate(256, 230)">
+  <ellipse cx="0" cy="0" rx="152" ry="36" fill="none"
+           stroke="#64B5F6" stroke-width="2.5" opacity="0.35"
+           stroke-dasharray="10,7" transform="rotate(-20)"/>
+</g>
+
+<!-- ====== WORD BUBBLES ====== -->
+
+<!-- Bubble 1: "Hello" — top left -->
+<g filter="url(#bubbleShadow)" opacity="0">
+  <rect x="18" y="68" width="108" height="44" rx="22" fill="url(#bubble1Grad)"/>
+  <!-- tail -->
+  <polygon points="80,112 68,128 92,112" fill="#00C853"/>
+  <text x="72" y="96" font-family="'Arial Black', sans-serif" font-size="20" font-weight="900"
+        fill="#ffffff" text-anchor="middle">Hello</text>
+  <animate attributeName="opacity" values="0;0;1;1;1;0;0" dur="7s" begin="0s" repeatCount="indefinite"/>
+</g>
+
+<!-- Bubble 2: "World" — top right -->
+<g filter="url(#bubbleShadow)" opacity="0">
+  <rect x="368" y="60" width="114" height="44" rx="22" fill="url(#bubble5Grad)"/>
+  <polygon points="400,104 388,120 412,104" fill="#0091EA"/>
+  <text x="425" y="88" font-family="'Arial Black', sans-serif" font-size="20" font-weight="900"
+        fill="#ffffff" text-anchor="middle">World</text>
+  <animate attributeName="opacity" values="0;0;0;1;1;1;0" dur="7s" begin="1s" repeatCount="indefinite"/>
+</g>
+
+<!-- Bubble 3: "Learn" — left middle -->
+<g filter="url(#bubbleShadow)" opacity="0">
+  <rect x="14" y="220" width="108" height="44" rx="22" fill="url(#bubble3Grad)"/>
+  <polygon points="122,242 140,242 122,258" fill="#AA00FF"/>
+  <text x="68" y="248" font-family="'Arial Black', sans-serif" font-size="20" font-weight="900"
+        fill="#ffffff" text-anchor="middle">Learn</text>
+  <animate attributeName="opacity" values="0;1;1;1;0;0;0" dur="7s" begin="2s" repeatCount="indefinite"/>
+</g>
+
+<!-- Bubble 4: "Speak" — right middle -->
+<g filter="url(#bubbleShadow)" opacity="0">
+  <rect x="382" y="210" width="116" height="44" rx="22" fill="url(#bubble2Grad)"/>
+  <polygon points="382,230 364,238 382,250" fill="#FF3D00"/>
+  <text x="440" y="238" font-family="'Arial Black', sans-serif" font-size="20" font-weight="900"
+        fill="#ffffff" text-anchor="middle">Speak</text>
+  <animate attributeName="opacity" values="0;0;1;1;1;0;0" dur="7s" begin="3s" repeatCount="indefinite"/>
+</g>
+
+<!-- Bubble 5: "Think" — bottom left -->
+<g filter="url(#bubbleShadow)" opacity="0">
+  <rect x="20" y="355" width="112" height="44" rx="22" fill="url(#bubble4Grad)"/>
+  <polygon points="80,355 68,338 92,355" fill="#F9A825"/>
+  <text x="76" y="383" font-family="'Arial Black', sans-serif" font-size="20" font-weight="900"
+        fill="#333333" text-anchor="middle">Think</text>
+  <animate attributeName="opacity" values="1;1;0;0;0;1;1" dur="7s" begin="0.5s" repeatCount="indefinite"/>
+</g>
+
+<!-- Bubble 6: "Dream" — bottom right -->
+<g filter="url(#bubbleShadow)" opacity="0">
+  <rect x="368" y="350" width="120" height="44" rx="22" fill="url(#bubble1Grad)"/>
+  <polygon points="420,350 408,334 432,350" fill="#00C853"/>
+  <text x="428" y="378" font-family="'Arial Black', sans-serif" font-size="20" font-weight="900"
+        fill="#ffffff" text-anchor="middle">Dream</text>
+  <animate attributeName="opacity" values="0;0;0;0;1;1;1" dur="7s" begin="4s" repeatCount="indefinite"/>
+</g>
+
+<!-- App name -->
+<text x="256" y="448"
+      font-family="'Arial Black', sans-serif"
+      font-size="36" font-weight="900"
+      fill="#ffffff" text-anchor="middle" opacity="0.95"
+      letter-spacing="2"
+      style="filter:drop-shadow(0 2px 6px rgba(0,0,0,0.5))">WorldsWorld</text>
+
+<!-- Shine overlay -->
+<rect width="512" height="512" rx="115" ry="115" fill="url(#shineOverlay)"/>
+```
+
+  </g>
+</svg>
