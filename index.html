@@ -565,15 +565,16 @@ function toggleSound() {
 
 // ─── TABS ────────────────────────────────────────────────────────────────────
 function showTab(tab) {
-    ['play','stats','words','data','duel'].forEach(t => {
+    ['play','stats','words','data','duel','casino'].forEach(t => {
         document.getElementById('tab-'+t).style.display = (t===tab)?'block':'none';
     });
     document.querySelectorAll('.nav-tab').forEach((b,i) => {
-        b.classList.toggle('active', ['play','stats','words','data','duel'][i]===tab);
+        b.classList.toggle('active', ['play','stats','words','data','duel','casino'][i]===tab);
     });
     if(tab==='stats')  renderStats();
     if(tab==='words')  renderWordList();
     if(tab==='duel')   showDuelMode('online');
+  if(tab==='casino') altinYukle();
 }
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
@@ -1646,6 +1647,7 @@ window.casinoOyunuBaslat = casinoOyunuBaslat;
 </body>
 
 </html>
+
 
 
 
