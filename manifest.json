@@ -1,0 +1,14 @@
+{
+  "name": "Alan 12 True Zen",
+  "short_name": "Alan 12",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0d1117",
+  "theme_color": "#0d1117",
+  "orientation": "portrait",
+  "icons": [{
+    "src": "icon.png",
+    "sizes": "192x192",
+    "type": "image/png"
+  }]
+}
