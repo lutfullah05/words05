@@ -1522,7 +1522,52 @@ init();
     document.getElementById('login-btn').style.display = 'inline-block';
     document.getElementById('logout-btn').style.display = 'none';
   }
+// ===== ALTIN & CASINO SİSTEMİ =====
+let secilenMasa = 0;
 
+async function altinYukle() {
+    const user = window.firebaseAuth.currentUser;
+    if (!user) return;
+    const { getDoc, doc } = window.firestoreFunctions;
+    const ref = doc(window.firebaseDb, 'users', user.uid);
+    const snap = await getDoc(ref);
+    if (snap.exists()) {
+        const data = snap.data();
+        const altin = data.altin ?? 1000;
+        document.getElementById('altin-goster').textContent = altin + ' Altın';
+        return altin;
+    } else {
+        // Yeni kullanıcıya 1000 altın ver
+        const { setDoc } = window.firestoreFunctions;
+        await setDoc(ref, { altin: 1000 }, { merge: true });
+        document.getElementById('altin-goster').textContent = '1000 Altın';
+        return 1000;
+    }
+}
+
+async function masaSec(miktar) {
+    const altin = await altinYukle();
+    secilenMasa = miktar;
+    document.getElementById('masa-bilgi').style.display = 'block';
+    document.getElementById('casino-basla-btn').style.display = 'block';
+    const masaAdi = miktar === 50 ? '🟢 Küçük Masa' : miktar === 200 ? '🟡 Orta Masa' : '🔴 Büyük Masa';
+    document.getElementById('masa-goster').textContent = masaAdi + ' — ' + miktar + ' Altın';
+    if (altin < miktar) {
+        document.getElementById('bahis-uyari').textContent = '⚠️ Yeterli altının yok!';
+        document.getElementById('casino-basla-btn').disabled = true;
+    } else {
+        document.getElementById('bahis-uyari').textContent = '⚠️ ' + miktar + ' altınını riske atıyorsun!';
+        document.getElementById('casino-basla-btn').disabled = false;
+    }
+}
+
+async function casinoOyunuBaslat() {
+    alert('🎰 Bahisli masa yakında açılıyor!');
+}
+
+window.masaSec = masaSec;
+window.casinoOyunuBaslat = casinoOyunuBaslat;
+// ===== ALTIN & CASINO SİSTEMİ SONU =====
   window.googleGiris = googleGiris;
   window.googleCikis = googleCikis;
 </script>
@@ -1601,6 +1646,7 @@ init();
 </body>
 
 </html>
+
 
 
 
