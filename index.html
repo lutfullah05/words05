@@ -725,6 +725,14 @@ function goHome() {
     document.getElementById('gameScreen').classList.remove('active');
     document.getElementById('gameScreen').classList.remove('lightning-mode');
     document.getElementById('menuScreen').classList.add('active');
+  // Safari redirect sonucu kontrol et
+const { getRedirectResult } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
+const result = await getRedirectResult(window.firebaseAuth);
+if (result?.user) {
+    document.getElementById('user-name').textContent = result.user.displayName;
+    document.getElementById('login-btn').style.display = 'none';
+    document.getElementById('logout-btn').style.display = 'inline-block';
+}
     init();
 }
 
@@ -1468,6 +1476,25 @@ init();
     try {
         const provider = new window.GoogleAuthProvider();
         provider.setCustomParameters({ prompt: 'select_account' });
+        
+        // Safari fix
+        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        if (isSafari) {
+            const { signInWithRedirect, getRedirectResult } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
+            await signInWithRedirect(window.firebaseAuth, provider);
+            return;
+        }
+        
+        const result = await window.signInWithPopup(window.firebaseAuth, provider);
+        const user = result.user;
+        document.getElementById('user-name').textContent = user.displayName;
+        document.getElementById('login-btn').style.display = 'none';
+        document.getElementById('logout-btn').style.display = 'inline-block';
+    } catch (e) {
+        alert('Giriş hatası: ' + e.message);
+    }
+}
+        provider.setCustomParameters({ prompt: 'select_account' });
         const result = await window.signInWithPopup(window.firebaseAuth, provider);
       const user = result.user;
       document.getElementById('user-name').textContent = user.displayName;
@@ -1563,6 +1590,7 @@ init();
 </body>
 
 </html>
+
 
 
 
