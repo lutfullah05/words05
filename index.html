@@ -1466,8 +1466,9 @@ init();
   <script>
   async function googleGiris() {
     try {
-      const provider = new window.GoogleAuthProvider();
-      const result = await window.signInWithPopup(window.firebaseAuth, provider);
+        const provider = new window.GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: 'select_account' });
+        const result = await window.signInWithPopup(window.firebaseAuth, provider);
       const user = result.user;
       document.getElementById('user-name').textContent = user.displayName;
       document.getElementById('login-btn').style.display = 'none';
@@ -1562,6 +1563,7 @@ init();
 </body>
 
 </html>
+
 
 
 
