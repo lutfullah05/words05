@@ -298,7 +298,44 @@ textarea { width:100%; height:90px; background:var(--bg); color:var(--accent); b
 
     <!-- DUEL TAB -->
     <div id="tab-duel" style="display:none;">
+<!-- CASINO TAB -->
+<div id="tab-casino" style="display:none;">
+  <div style="padding:16px;">
+    
+    <!-- Altın Bakiye -->
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:2rem;">💰</div>
+      <div style="font-size:1.5rem;font-weight:bold;color:var(--accent);" id="altin-goster">0 Altın</div>
+    </div>
 
+    <!-- Masa Seçimi -->
+    <div style="font-weight:bold;margin-bottom:10px;color:var(--subtext);">MASA SEÇ</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px;">
+      <button class="btn" onclick="masaSec(50)" style="background:#2d5a27;padding:12px;">
+        🟢<br><b>KÜÇÜK</b><br><span style="font-size:0.8rem;">50 Altın</span>
+      </button>
+      <button class="btn" onclick="masaSec(200)" style="background:#5a4f00;padding:12px;">
+        🟡<br><b>ORTA</b><br><span style="font-size:0.8rem;">200 Altın</span>
+      </button>
+      <button class="btn" onclick="masaSec(500)" style="background:#5a0000;padding:12px;">
+        🔴<br><b>BÜYÜK</b><br><span style="font-size:0.8rem;">500 Altın</span>
+      </button>
+    </div>
+
+    <!-- Seçilen Masa -->
+    <div id="masa-bilgi" style="display:none;text-align:center;margin-bottom:16px;">
+      <div style="font-size:1rem;color:var(--subtext);">Seçilen masa:</div>
+      <div id="masa-goster" style="font-size:1.3rem;font-weight:bold;color:var(--accent);"></div>
+      <div style="font-size:0.85rem;color:var(--warn);margin-top:4px;" id="bahis-uyari"></div>
+    </div>
+
+    <!-- Başlat Butonu -->
+    <button class="btn btn-main" id="casino-basla-btn" style="display:none;width:100%;" onclick="casinoOyunuBaslat()">
+      🎰 MASAYA OTU
+    </button>
+
+  </div>
+</div>
         <!-- Düello mod seçimi -->
         <div id="duelModeSelect" style="margin-bottom:12px">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
@@ -1564,6 +1601,7 @@ init();
 </body>
 
 </html>
+
 
 
 
