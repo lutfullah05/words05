@@ -8,9 +8,9 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "worldsworld-icon-v2.svg",
+      "src": "worldsworld-icon.png",
       "sizes": "512x512",
-      "type": "image/svg+xml"
+      "type": "image/png"
     }
   ]
 }
