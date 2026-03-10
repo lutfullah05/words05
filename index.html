@@ -1472,19 +1472,10 @@ self.addEventListener('fetch', e => { e.respondWith(fetch(e.request).catch(() =>
 init();
 </script>
   <script>
-  async function googleGiris() {
+ async function googleGiris() {
     try {
         const provider = new window.GoogleAuthProvider();
         provider.setCustomParameters({ prompt: 'select_account' });
-        
-        // Safari fix
-        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-        if (isSafari) {
-            const { signInWithRedirect, getRedirectResult } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
-            await signInWithRedirect(window.firebaseAuth, provider);
-            return;
-        }
-        
         const result = await window.signInWithPopup(window.firebaseAuth, provider);
         const user = result.user;
         document.getElementById('user-name').textContent = user.displayName;
@@ -1494,16 +1485,6 @@ init();
         alert('Giriş hatası: ' + e.message);
     }
 }
-        provider.setCustomParameters({ prompt: 'select_account' });
-        const result = await window.signInWithPopup(window.firebaseAuth, provider);
-      const user = result.user;
-      document.getElementById('user-name').textContent = user.displayName;
-      document.getElementById('login-btn').style.display = 'none';
-      document.getElementById('logout-btn').style.display = 'inline-block';
-    } catch (e) {
-      alert('Giriş hatası: ' + e.message);
-    }
-  }
 
   async function googleCikis() {
     await window.signOut(window.firebaseAuth);
@@ -1513,16 +1494,7 @@ init();
   }
 
   window.googleGiris = googleGiris;
-  window.googleCikis = googleCikis;
-</script>
-  <script type="module">
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-  import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-
-  // Zaten başlatılmış app'i kullan
-  const app = getApps()[0];
-  const auth = getAuth(app);
+  
   const db = getFirestore(app);
 
   const SYNC_LOADED_KEY = 'syncLoadedAt';
@@ -1590,6 +1562,7 @@ init();
 </body>
 
 </html>
+
 
 
 
