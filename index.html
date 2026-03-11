@@ -1545,11 +1545,7 @@ async function altinYukle() {
         }
         document.getElementById('altin-goster').textContent = '💰 ' + altin + ' Altın';
         return altin;
-    } catch(e) {
-        document.getElementById('altin-goster').textContent = '❌ Hata: ' + e.message;
-        return 0;
-    }
-}
+  
    const user = window.firebaseAuth.currentUser;
     if (!user) {
         document.getElementById('altin-goster').textContent = '⚠️ Giriş yapın!';
@@ -1669,6 +1665,7 @@ window.casinoOyunuBaslat = casinoOyunuBaslat;
 </body>
 
 </html>
+
 
 
 
