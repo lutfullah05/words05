@@ -1527,6 +1527,29 @@ init();
 let secilenMasa = 0;
 
 async function altinYukle() {
+    try {
+        const user = window.firebaseAuth.currentUser;
+        if (!user) {
+            document.getElementById('altin-goster').textContent = '⚠️ Giriş yapın!';
+            return 0;
+        }
+        const db = window.firebaseDb;
+        const { doc, getDoc, setDoc } = window.firestoreFunctions;
+        const ref = doc(db, 'users', user.uid);
+        const snap = await getDoc(ref);
+        let altin = 1000;
+        if (snap.exists() && snap.data().altin !== undefined) {
+            altin = snap.data().altin;
+        } else {
+            await setDoc(ref, { altin: 1000 }, { merge: true });
+        }
+        document.getElementById('altin-goster').textContent = '💰 ' + altin + ' Altın';
+        return altin;
+    } catch(e) {
+        document.getElementById('altin-goster').textContent = '❌ Hata: ' + e.message;
+        return 0;
+    }
+}
     const user = window.firebaseAuth.currentUser;
     if (!user) {
     document.getElementById('altin-goster').textContent = 'Giriş yapın!';
@@ -1657,6 +1680,7 @@ window.casinoOyunuBaslat = casinoOyunuBaslat;
 </body>
 
 </html>
+
 
 
 
