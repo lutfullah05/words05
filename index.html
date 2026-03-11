@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -225,7 +223,6 @@ textarea { width:100%; height:90px; background:var(--bg); color:var(--accent); b
         <button class="nav-tab" onclick="showTab('words')">📚 KELİMELER</button>
         <button class="nav-tab" onclick="showTab('data')">⚙️ VERİ</button>
         <button class="nav-tab" onclick="showTab('duel')">⚔️ DÜELLO</button>
-      <button class="nav-tab" onclick="showTab('casino')">🎰 BAHİS</button>
     </div>
 
     <!-- PLAY TAB -->
@@ -298,44 +295,7 @@ textarea { width:100%; height:90px; background:var(--bg); color:var(--accent); b
 
     <!-- DUEL TAB -->
     <div id="tab-duel" style="display:none;">
-<!-- CASINO TAB -->
-<div id="tab-casino" style="display:none;">
-  <div style="padding:16px;">
-    
-    <!-- Altın Bakiye -->
-    <div style="text-align:center;margin-bottom:20px;">
-      <div style="font-size:2rem;">💰</div>
-      <div style="font-size:1.5rem;font-weight:bold;color:var(--accent);" id="altin-goster">0 Altın</div>
-    </div>
 
-    <!-- Masa Seçimi -->
-    <div style="font-weight:bold;margin-bottom:10px;color:var(--subtext);">MASA SEÇ</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px;">
-      <button class="btn" onclick="masaSec(50)" style="background:#2d5a27;padding:12px;">
-        🟢<br><b>KÜÇÜK</b><br><span style="font-size:0.8rem;">50 Altın</span>
-      </button>
-      <button class="btn" onclick="masaSec(200)" style="background:#5a4f00;padding:12px;">
-        🟡<br><b>ORTA</b><br><span style="font-size:0.8rem;">200 Altın</span>
-      </button>
-      <button class="btn" onclick="masaSec(500)" style="background:#5a0000;padding:12px;">
-        🔴<br><b>BÜYÜK</b><br><span style="font-size:0.8rem;">500 Altın</span>
-      </button>
-    </div>
-
-    <!-- Seçilen Masa -->
-    <div id="masa-bilgi" style="display:none;text-align:center;margin-bottom:16px;">
-      <div style="font-size:1rem;color:var(--subtext);">Seçilen masa:</div>
-      <div id="masa-goster" style="font-size:1.3rem;font-weight:bold;color:var(--accent);"></div>
-      <div style="font-size:0.85rem;color:var(--warn);margin-top:4px;" id="bahis-uyari"></div>
-    </div>
-
-    <!-- Başlat Butonu -->
-    <button class="btn btn-main" id="casino-basla-btn" style="display:none;width:100%;" onclick="casinoOyunuBaslat()">
-      🎰 MASAYA OTU
-    </button>
-
-  </div>
-</div>
         <!-- Düello mod seçimi -->
         <div id="duelModeSelect" style="margin-bottom:12px">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
@@ -554,7 +514,7 @@ const DIFF_TIME = { easy:90, mid:50, hard:25, lightning:5 };
 function toggleTheme() {
     document.body.classList.toggle('light');
     const isLight = document.body.classList.contains('light');
-   try { localStorage.setItem('theme', isLight?'light':'dark'); } catch(e) {}
+    localStorage.setItem('theme', isLight?'light':'dark');
     document.getElementById('themeBtn').innerText = isLight?'☀️':'🌙';
 }
 function toggleSound() {
@@ -565,16 +525,15 @@ function toggleSound() {
 
 // ─── TABS ────────────────────────────────────────────────────────────────────
 function showTab(tab) {
-    ['play','stats','words','data','duel','casino'].forEach(t => {
+    ['play','stats','words','data','duel'].forEach(t => {
         document.getElementById('tab-'+t).style.display = (t===tab)?'block':'none';
     });
     document.querySelectorAll('.nav-tab').forEach((b,i) => {
-        b.classList.toggle('active', ['play','stats','words','data','duel','casino'][i]===tab);
+        b.classList.toggle('active', ['play','stats','words','data','duel'][i]===tab);
     });
     if(tab==='stats')  renderStats();
     if(tab==='words')  renderWordList();
     if(tab==='duel')   showDuelMode('online');
-  if(tab==='casino') altinYukle();
 }
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
@@ -1523,52 +1482,7 @@ init();
     document.getElementById('login-btn').style.display = 'inline-block';
     document.getElementById('logout-btn').style.display = 'none';
   }
-// ===== ALTIN & CASINO SİSTEMİ =====
-let secilenMasa = 0;
 
-async function altinYukle() {
-    try {
-        const user = window.firebaseAuth.currentUser;
-        if (!user) {
-            document.getElementById('altin-goster').textContent = '⚠️ Giriş yapın!';
-            return 0;
-        }
-        const db = window.firebaseDb;
-        const { doc, getDoc, setDoc } = window.firestoreFunctions;
-        const ref = doc(db, 'users', user.uid);
-        const snap = await getDoc(ref);
-        let altin = 1000;
-        if (snap.exists() && snap.data().altin !== undefined) {
-            altin = snap.data().altin;
-        } else {
-            await setDoc(ref, { altin: 1000 }, { merge: true });
-        }
-        document.getElementById('altin-goster').textContent = '💰 ' + altin + ' Altın';
-        return altin;
-
-async function masaSec(miktar) {
-    const altin = await altinYukle();
-    secilenMasa = miktar;
-    document.getElementById('masa-bilgi').style.display = 'block';
-    document.getElementById('casino-basla-btn').style.display = 'block';
-    const masaAdi = miktar === 50 ? '🟢 Küçük Masa' : miktar === 200 ? '🟡 Orta Masa' : '🔴 Büyük Masa';
-    document.getElementById('masa-goster').textContent = masaAdi + ' — ' + miktar + ' Altın';
-    if (altin < miktar) {
-        document.getElementById('bahis-uyari').textContent = '⚠️ Yeterli altının yok!';
-        document.getElementById('casino-basla-btn').disabled = true;
-    } else {
-        document.getElementById('bahis-uyari').textContent = '⚠️ ' + miktar + ' altınını riske atıyorsun!';
-        document.getElementById('casino-basla-btn').disabled = false;
-    }
-}
-
-async function casinoOyunuBaslat() {
-    alert('🎰 Bahisli masa yakında açılıyor!');
-}
-
-window.masaSec = masaSec;
-window.casinoOyunuBaslat = casinoOyunuBaslat;
-// ===== ALTIN & CASINO SİSTEMİ SONU =====
   window.googleGiris = googleGiris;
   window.googleCikis = googleCikis;
 </script>
@@ -1647,19 +1561,6 @@ window.casinoOyunuBaslat = casinoOyunuBaslat;
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
