@@ -772,6 +772,8 @@ function clearFails() {
     fails=[];
     save();
     renderStats();
+    const btn = document.getElementById('failBtn');
+    if(btn) btn.style.display = 'none';
     alert("Hatalı kelimeler temizlendi!");
 }
 function resetStats() {
@@ -1603,6 +1605,7 @@ init();
 </body>
 
 </html>
+
 
 
 
