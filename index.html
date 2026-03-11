@@ -1276,7 +1276,24 @@ function listenRoom(code) {
         });
     });
 }
+// Düello havuz ve zorluk seçimi
+let duelPool = 'mixed';
+let duelDiff = 'easy';
 
+function setDuelPool(pool) {
+    duelPool = pool;
+    document.querySelectorAll('[data-pool]').forEach(b => 
+        b.classList.toggle('active', b.dataset.pool === pool));
+}
+
+function setDuelDiff(diff) {
+    duelDiff = diff;
+    document.querySelectorAll('[data-diff]').forEach(b => 
+        b.classList.toggle('active', b.dataset.diff === diff));
+}
+
+window.setDuelPool = setDuelPool;
+window.setDuelDiff = setDuelDiff;
 async function hostStartGame() {
     if(!isHost) return;
     const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
@@ -1576,6 +1593,7 @@ init();
 </body>
 
 </html>
+
 
 
 
