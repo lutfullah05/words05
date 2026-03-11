@@ -1550,33 +1550,22 @@ async function altinYukle() {
         return 0;
     }
 }
-    const user = window.firebaseAuth.currentUser;
+   const user = window.firebaseAuth.currentUser;
     if (!user) {
-    document.getElementById('altin-goster').textContent = 'Giriş yapın!';
-    return;
-}
-    const { getDoc, doc } = window.firestoreFunctions;
+        document.getElementById('altin-goster').textContent = '⚠️ Giriş yapın!';
+        return 0;
+    }
+    const { doc, getDoc, setDoc } = window.firestoreFunctions;
     const ref = doc(window.firebaseDb, 'users', user.uid);
     const snap = await getDoc(ref);
-    if (snap.exists()) {
-        const data = snap.data();
-       const altin = data.altin !== undefined ? data.altin : 1000;
-if (data.altin === undefined) {
-    const { setDoc: setDocFn } = window.firestoreFunctions;
-    await setDocFn(ref, { altin: 1000 }, { merge: true });
-}
-        document.getElementById('altin-goster').textContent = altin + ' Altın';
-        return altin;
+    let altin = 1000;
+    if (snap.exists() && snap.data().altin !== undefined) {
+        altin = snap.data().altin;
     } else {
-        // Yeni kullanıcıya 1000 altın ver
-        const { setDoc } = window.firestoreFunctions;
-        const { setDoc: setDocFn } = window.firestoreFunctions;
-await setDocFn(ref, { altin: 1000 }, { merge: true });
-document.getElementById('altin-goster').textContent = '1000 Altın';
-return 1000;
-        document.getElementById('altin-goster').textContent = '1000 Altın';
-        return 1000;
+        await setDoc(ref, { altin: 1000 }, { merge: true });
     }
+    document.getElementById('altin-goster').textContent = '💰 ' + altin + ' Altın';
+    return altin;
 }
 
 async function masaSec(miktar) {
@@ -1680,6 +1669,7 @@ window.casinoOyunuBaslat = casinoOyunuBaslat;
 </body>
 
 </html>
+
 
 
 
