@@ -1528,7 +1528,10 @@ let secilenMasa = 0;
 
 async function altinYukle() {
     const user = window.firebaseAuth.currentUser;
-    if (!user) return;
+    if (!user) {
+    document.getElementById('altin-goster').textContent = 'Giriş yapın!';
+    return;
+}
     const { getDoc, doc } = window.firestoreFunctions;
     const ref = doc(window.firebaseDb, 'users', user.uid);
     const snap = await getDoc(ref);
@@ -1647,6 +1650,7 @@ window.casinoOyunuBaslat = casinoOyunuBaslat;
 </body>
 
 </html>
+
 
 
 
