@@ -554,7 +554,7 @@ const DIFF_TIME = { easy:90, mid:50, hard:25, lightning:5 };
 function toggleTheme() {
     document.body.classList.toggle('light');
     const isLight = document.body.classList.contains('light');
-    localStorage.setItem('theme', isLight?'light':'dark');
+   try { localStorage.setItem('theme', isLight?'light':'dark'); } catch(e) {}
     document.getElementById('themeBtn').innerText = isLight?'☀️':'🌙';
 }
 function toggleSound() {
@@ -1680,6 +1680,7 @@ window.casinoOyunuBaslat = casinoOyunuBaslat;
 </body>
 
 </html>
+
 
 
 
