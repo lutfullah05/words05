@@ -307,7 +307,22 @@ textarea { width:100%; height:90px; background:var(--bg); color:var(--accent); b
         <!-- Online Düello Kurulum -->
         <div id="onlineDuelSetup" style="">
             <div style="font-size:1.1rem;font-weight:bold;margin-bottom:12px;text-align:center">🌐 ONLİNE DÜELLO</div>
-            <div style="font-size:0.85rem;color:var(--subtext);margin-bottom:8px;font-weight:bold">GÜN SEÇ</div>
+            <div style="font-size:0.85rem;color:var(--subtext);margin-bottom:8px;font-weight:bold"><!-- Kelime Havuzu Seçimi -->
+<div style="font-size:0.85rem;color:var(--subtext);margin-bottom:8px;font-weight:bold;">KELİME HAVUZU</div>
+<div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;">
+    <button class="d-btn active" data-pool="mixed" onclick="setDuelPool('mixed')">🔀 Karışık</button>
+    <button class="d-btn" data-pool="learned" onclick="setDuelPool('learned')">✅ Öğrenilen</button>
+    <button class="d-btn" data-pool="daily" onclick="setDuelPool('daily')">📅 Güne Göre</button>
+</div>
+
+<!-- Zorluk Seçimi -->
+<div style="font-size:0.85rem;color:var(--subtext);margin-bottom:8px;font-weight:bold;">ZORLUK</div>
+<div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;">
+    <button class="d-btn active" data-diff="easy" onclick="setDuelDiff('easy')">🟢 Kolay</button>
+    <button class="d-btn" data-diff="mid" onclick="setDuelDiff('mid')">🟡 Orta</button>
+    <button class="d-btn" data-diff="hard" onclick="setDuelDiff('hard')">🔴 Zor</button>
+    <button class="d-btn" data-diff="lightning" onclick="setDuelDiff('lightning')">⚡ Şimşek</button>
+</div>GÜN SEÇ</div>
             <select id="onlineDuelDay" style="width:100%;padding:12px;background:var(--card);color:var(--accent);border:1px solid var(--border);border-radius:8px;margin-bottom:10px;font-size:1rem;font-weight:bold"></select>
             <div style="font-size:0.85rem;color:var(--subtext);margin-bottom:8px;font-weight:bold">SORU SAYISI</div>
             <div style="display:flex;gap:6px;margin-bottom:14px">
@@ -1561,6 +1576,7 @@ init();
 </body>
 
 </html>
+
 
 
 
