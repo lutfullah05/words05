@@ -1169,11 +1169,21 @@ async function createOnlineRoom() {
     isHost = true;
 
     const day = parseInt(document.getElementById('onlineDuelDay').value);
-    const pool = db.filter(w=>(w.day||1)===day);
-    if(!pool.length) return alert('Bu günde kelime yok!');
 
-    const shuffled = pool.slice().sort(()=>Math.random()-.5).slice(0, Math.min(onlineDuelQCount, pool.length));
-    const questions = shuffled.map(w => ({en:w.en, tr:w.tr, isEn:Math.random()>.5}));
+let pool;
+if (duelPool === 'daily') {
+    pool = db.filter(w => (w.day||1) === day);
+    if(!pool.length) return alert('Bu günde kelime yok!');
+} else if (duelPool === 'learned') {
+    pool = db.filter(w => w.done && w.done.includes(day.toString()));
+    if(!pool.length) return alert('Öğrenilen kelime yok!');
+} else {
+    pool = db.slice();
+}
+
+const diffTimes = {easy:90, mid:50, hard:25, lightning:5};
+const shuffled = pool.slice().sort(()=>Math.random()-.5).slice(0, Math.min(onlineDuelQCount, pool.length));
+const questions = shuffled.map(w => ({en:w.en, tr:w.tr, isEn:Math.random()>.5, time:diffTimes[duelDiff]||90}));
 
     const code = genRoomCode();
     currentRoomCode = code;
@@ -1593,6 +1603,7 @@ init();
 </body>
 
 </html>
+
 
 
 
