@@ -1537,13 +1537,20 @@ async function altinYukle() {
     const snap = await getDoc(ref);
     if (snap.exists()) {
         const data = snap.data();
-        const altin = data.altin ?? 1000;
+       const altin = data.altin !== undefined ? data.altin : 1000;
+if (data.altin === undefined) {
+    const { setDoc: setDocFn } = window.firestoreFunctions;
+    await setDocFn(ref, { altin: 1000 }, { merge: true });
+}
         document.getElementById('altin-goster').textContent = altin + ' Altın';
         return altin;
     } else {
         // Yeni kullanıcıya 1000 altın ver
         const { setDoc } = window.firestoreFunctions;
-        await setDoc(ref, { altin: 1000 }, { merge: true });
+        const { setDoc: setDocFn } = window.firestoreFunctions;
+await setDocFn(ref, { altin: 1000 }, { merge: true });
+document.getElementById('altin-goster').textContent = '1000 Altın';
+return 1000;
         document.getElementById('altin-goster').textContent = '1000 Altın';
         return 1000;
     }
@@ -1650,6 +1657,7 @@ window.casinoOyunuBaslat = casinoOyunuBaslat;
 </body>
 
 </html>
+
 
 
 
