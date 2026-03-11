@@ -1241,7 +1241,7 @@ function listenRoom(code) {
             }
 
             // Oyun başladıysa
-            if(data.status === 'playing' && document.getElementById('onlineWaiting').style.display !== 'none') {
+            if(data.status === 'playing' && document.getElementById('onlineGame').style.display === 'none') {
                 document.getElementById('onlineWaiting').style.display = 'none';
                 ogQuestions = data.questions;
                 ogCurrentQ = 0;
@@ -1561,6 +1561,7 @@ init();
 </body>
 
 </html>
+
 
 
 
