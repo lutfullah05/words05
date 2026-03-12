@@ -1184,8 +1184,9 @@ if (duelPool === 'daily') {
 }
 
 const diffTimes = {easy:90, mid:50, hard:25, lightning:5};
+const selectedDiff = window.duelDiff || duelDiff || 'easy';
 const shuffled = pool.slice().sort(()=>Math.random()-.5).slice(0, Math.min(onlineDuelQCount, pool.length));
-const questions = shuffled.map(w => ({en:w.en, tr:w.tr, isEn:Math.random()>.5, time:diffTimes[duelDiff]||90}));
+const questions = shuffled.map(w => ({en:w.en, tr:w.tr, isEn:Math.random()>.5, time:diffTimes[selectedDiff]||90}));
 
     const code = genRoomCode();
     currentRoomCode = code;
@@ -1299,7 +1300,7 @@ function setDuelPool(pool) {
 }
 
 function setDuelDiff(diff) {
-    duelDiff = diff;
+    window.duelDiff = diff;
     document.querySelectorAll('[data-diff]').forEach(b => 
         b.classList.toggle('active', b.dataset.diff === diff));
 }
@@ -1605,6 +1606,7 @@ init();
 </body>
 
 </html>
+
 
 
 
