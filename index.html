@@ -1128,7 +1128,7 @@ let ogQuestions = [];
 let ogCurrentQ = 0;
 let ogAnswered = false;
 let ogTimeLeft = 0;
-const OG_TIME = 15; // saniye
+const OG_TIME = 15; // saniye (varsayılan, zorluk seçimine göre değişir)
 
 function showDuelMode(mode) {
     document.getElementById('onlineDuelSetup').style.display = mode==='online' ? 'block' : 'none';
@@ -1374,16 +1374,17 @@ function renderOnlineQuestion() {
     });
 
     // Timer
-    ogTimeLeft = OG_TIME * 10;
+    const currentTime = ogQuestions[ogCurrentQ]?.time || OG_TIME;
+ogTimeLeft = currentTime * 10;
     const bar = document.getElementById('og-timerBar');
     const timerEl = document.getElementById('og-timer');
     bar.style.width = '100%';
     bar.style.background = 'var(--accent)';
-    timerEl.innerText = OG_TIME + 's';
+    timerEl.innerText = currentTime + 's';
 
     ogTimer = setInterval(() => {
         ogTimeLeft--;
-        const pct = ogTimeLeft / (OG_TIME*10) * 100;
+       const pct = ogTimeLeft / (currentTime*10) * 100;
         bar.style.width = pct + '%';
         timerEl.innerText = Math.ceil(ogTimeLeft/10) + 's';
         if(pct < 30) bar.style.background = '#da3633';
@@ -1606,6 +1607,7 @@ init();
 </body>
 
 </html>
+
 
 
 
